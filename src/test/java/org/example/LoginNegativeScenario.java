@@ -87,4 +87,52 @@ public class LoginNegativeScenario extends BrowserConfig {
                 .shouldStayOnAuthPage()
                 .assertAll();
     }
+
+    @Story("Registration rejects an empty personal number")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Follows the registration link from the login page and submits the customer "
+            + "check with no personal number, expecting the required-field error.")
+    @Test(dataProvider = "languages", dataProviderClass = DataSets.class,
+            description = "Registration reports an empty personal number as required")
+    public void emptyPersonalNumberIsRejected(Language language) {
+        loginSteps().switchLanguageTo(language)
+                .goToRegistration()
+                .submitEmptyForm()
+                .shouldShowRequiredErrorOnPersonalNumber(language)
+                .shouldStayOnRegistrationPage()
+                .assertAll();
+    }
+
+    @Story("Registration rejects a personal number of the wrong length")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Submits a personal number shorter than the required 11 characters and expects "
+            + "the localised length error.")
+    @Test(dataProvider = "shortPersonalNumberPerLanguage", dataProviderClass = DataSets.class,
+            description = "Registration rejects a personal number shorter than 11 characters")
+    public void shortPersonalNumberIsRejected(Language language, String shortPersonalNumber) {
+        loginSteps().switchLanguageTo(language)
+                .goToRegistration()
+                .enterPersonalNumber(shortPersonalNumber)
+                .clickNext()
+                .shouldShowLengthErrorOnPersonalNumber(language)
+                .shouldStayOnRegistrationPage()
+                .assertAll();
+    }
+
+    @Story("Registration rejects a missing birth date")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Enters a personal number of the correct length, which reveals the birth date "
+            + "fields, then submits without one and expects the required-field error.")
+    @Test(dataProvider = "personalNumberPerLanguage", dataProviderClass = DataSets.class,
+            description = "Registration reports a missing birth date as required")
+    public void missingBirthDateIsRejected(Language language, String personalNumber) {
+        loginSteps().switchLanguageTo(language)
+                .goToRegistration()
+                .enterPersonalNumber(personalNumber)
+                .shouldOfferBirthDateFields()
+                .clickNext()
+                .shouldShowRequiredErrorOnBirthDate(language)
+                .shouldStayOnRegistrationPage()
+                .assertAll();
+    }
 }
