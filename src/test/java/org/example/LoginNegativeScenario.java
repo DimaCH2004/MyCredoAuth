@@ -121,8 +121,8 @@ public class LoginNegativeScenario extends BrowserConfig {
 
     @Story("Registration rejects a missing birth date")
     @Severity(SeverityLevel.NORMAL)
-    @Description("Enters a personal number of the correct length, which reveals the birth date "
-            + "fields, then submits without one and expects the required-field error.")
+    @Description("Enters a personal number of the correct length, leaves the birth date fields "
+            + "empty, then submits and expects the required-field error.")
     @Test(dataProvider = "personalNumberPerLanguage", dataProviderClass = DataSets.class,
             description = "Registration reports a missing birth date as required")
     public void missingBirthDateIsRejected(Language language, String personalNumber) {
