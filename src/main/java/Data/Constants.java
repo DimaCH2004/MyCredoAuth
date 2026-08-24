@@ -13,9 +13,6 @@ public final class Constants {
     public static final boolean HEADLESS =
             Boolean.parseBoolean(System.getProperty("headless", "false"));
 
-    public static final Duration EXPLICIT_TIMEOUT =
-            Duration.ofSeconds(Long.getLong("timeout.explicit", 20L));
-
     public static final Duration FLUENT_TIMEOUT =
             Duration.ofSeconds(Long.getLong("timeout.fluent", 25L));
 

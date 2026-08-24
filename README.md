@@ -25,7 +25,8 @@ Useful overrides:
 | `-Dthreads=N` | `2` | Parallel threads. `1` runs serially. |
 | `-Dheadless=true` | `false` | See the note on headless below. |
 | `-DbaseUrl=...` | authorization page | Point the suite at another environment. |
-| `-Dtimeout.explicit=N` | `20` | Explicit wait ceiling, in seconds. |
+| `-Dtimeout.fluent=N` | `25` | Wait ceiling, in seconds. |
+| `-Dtimeout.poll=N` | `300` | Polling interval, in milliseconds. |
 
 ---
 
@@ -92,9 +93,14 @@ Chrome with a challenge page instead of the application. `-Dheadless=true` still
 that check does not apply.
 
 **Waits.** No implicit wait is configured anywhere, and none should be added — implicit and
-explicit waits do not compose. Everything waits through `WaitUtils`, which offers both explicit
-and fluent variants. This also keeps the negative assertions fast: `findElements` returns
-immediately, so proving an element is *absent* costs nothing rather than burning a full timeout.
+explicit waits do not compose. Everything waits through `WaitUtils`, which is built on
+`FluentWait` throughout, and deliberately so: every wait in this suite needs either a custom
+ignore set (clicking through `ElementClickInterceptedException` while Angular settles) or a
+custom predicate (exact-match localised text after trimming, which `textToBePresentInElement`
+does not do — it matches substrings and does not trim). `WebDriverWait` is a `FluentWait` with a
+fixed set of conditions, so it would add a second idiom without adding capability. This also
+keeps the negative assertions fast: `findElements` returns immediately, so proving an element is
+*absent* costs nothing rather than burning a full timeout.
 
 **Localisation timing.** Switching language re-renders the form, and the switcher button picks up
 its new label before Angular finishes re-translating the fields. Assertions on localised copy wait
